@@ -50,6 +50,8 @@ export default function Dashboard({ employee, onLogout }) {
 
   // REPAIR mode fields
   const [customer, setCustomer] = useState('')
+  const [repairBlockModel, setRepairBlockModel] = useState('')
+  const [repairJobNumber, setRepairJobNumber] = useState('')
   const [repairResult, setRepairResult] = useState('')
 
   const handleAdd = () => {
@@ -70,16 +72,20 @@ export default function Dashboard({ employee, onLogout }) {
       setResult('')
       setStage('')
     } else {
-      if (!customer || !repairResult) return
+      if (!customer || !repairBlockModel || !repairJobNumber || !repairResult) return
       setEntries(prev => [...prev, {
         id: Date.now(),
         type: 'REPAIR',
         customer,
+        blockModel: repairBlockModel,
+        jobNumber: repairJobNumber,
         result: repairResult,
         employee: employee.id,
         timestamp: new Date().toLocaleString()
       }])
       setCustomer('')
+      setRepairBlockModel('')
+      setRepairJobNumber('')
       setRepairResult('')
     }
   }
@@ -217,6 +223,31 @@ export default function Dashboard({ employee, onLogout }) {
               </div>
 
               <div className={styles.field}>
+                <label className={styles.label}>Block Model</label>
+                <select
+                  className={styles.select}
+                  value={repairBlockModel}
+                  onChange={e => setRepairBlockModel(e.target.value)}
+                >
+                  <option value="">-- Select Block Model --</option>
+                  {BLOCK_MODELS.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Repair Job Number</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  placeholder="Enter job number"
+                  value={repairJobNumber}
+                  onChange={e => setRepairJobNumber(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.field}>
                 <label className={styles.label}>Result</label>
                 <select
                   className={styles.select}
@@ -244,15 +275,10 @@ export default function Dashboard({ employee, onLogout }) {
               <thead>
                 <tr>
                   <th>Type</th>
-                  {mode === 'new' ? (
-                    <>
-                      <th>Block Model</th>
-                      <th>Block #</th>
-                      <th>Stage</th>
-                    </>
-                  ) : (
-                    <th>Customer</th>
-                  )}
+                  <th>Block Model</th>
+                  <th>Block / Job #</th>
+                  <th>Customer</th>
+                  <th>Stage</th>
                   <th>Result</th>
                   <th>Employee</th>
                   <th>Time</th>
@@ -266,15 +292,10 @@ export default function Dashboard({ employee, onLogout }) {
                         {entry.type}
                       </span>
                     </td>
-                    {entry.type === 'NEW' ? (
-                      <>
-                        <td>{entry.blockModel}</td>
-                        <td>{entry.blockNumber}</td>
-                        <td>{entry.stage}</td>
-                      </>
-                    ) : (
-                      <td>{entry.customer}</td>
-                    )}
+                    <td>{entry.blockModel || '—'}</td>
+                    <td>{entry.blockNumber || entry.jobNumber || '—'}</td>
+                    <td>{entry.customer || '—'}</td>
+                    <td>{entry.stage || '—'}</td>
                     <td>
                       <span className={
                         entry.result === 'OK' ? styles.resultOk :
