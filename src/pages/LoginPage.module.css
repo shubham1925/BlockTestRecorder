@@ -111,3 +111,26 @@
   color: var(--text-secondary);
   opacity: 0.5;
 }
+
+.welcomeBack {
+  font-size: 0.875rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  text-align: left;
+}
+
+.backLink {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-align: center;
+}
+
+.backLink:hover {
+  color: var(--accent);
+}
